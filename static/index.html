@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Typing Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    .input-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 150px;
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .error {
+      color: red;
+      text-align: center;
+    }
+    pre {
+      white-space: pre-wrap;
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Student Typing Report</h1>
+
+  <div class="input-group">
+    <input type="number" id="studentId" placeholder="Enter Student ID" />
+    <button onclick="fetchReport()">Get Report</button>
+  </div>
+
+  <div id="error" class="error"></div>
+
+  <div id="reportContainer"></div>
+
+  <script>
+    async function fetchReport() {
+      const id = document.getElementById('studentId').value;
+      const errorDiv = document.getElementById('error');
+      const container = document.getElementById('reportContainer');
+      errorDiv.textContent = '';
+      container.innerHTML = '';
+
+      if (!id) {
+        errorDiv.textContent = 'Please enter a valid Student ID.';
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/report/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch report');
+        const data = await res.json();
+
+        container.innerHTML = `
+          <div class="card">
+            <h2>👤 Student: ${data.student_name}</h2>
+          </div>
+          <div class="card">
+            <h3>📊 Exercise Summary</h3>
+            <pre>${data.exercise.summary}</pre>
+            <p><strong>🤖 AI Feedback:</strong> ${data.exercise.ai_feedback}</p>
+          </div>
+          <div class="card">
+            <h3>📊 Pool Summary</h3>
+            <pre>${data.pool.summary}</pre>
+            <p><strong>🤖 AI Feedback:</strong> ${data.pool.ai_feedback}</p>
+          </div>
+        `;
+      } catch (err) {
+        errorDiv.textContent = err.message;
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Typing Performance Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2c3e50;
+      --accent: #e74c3c;
+      --light: #ecf0f1;
+      --dark: #2c3e50;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --info: #3498db;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      color: var(--secondary);
+    }
+    
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      color: var(--secondary);
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    h1:after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: var(--primary);
+    }
+    
+    .input-group {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      gap: 10px;
+    }
+    
+    input[type="number"] {
+      padding: 12px 15px;
+      font-size: 16px;
+      width: 200px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      transition: all 0.3s;
+    }
+    
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+    
+    .card {
+      background: white;
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      border-top: 4px solid var(--primary);
+    }
+    
+    .error {
+      color: var(--accent);
+      text-align: center;
+      padding: 15px;
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: var(--border-radius);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    pre {
+      white-space: pre-wrap;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--primary);
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.5;
+    }
+    
+    .student-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .student-header h2 {
+      margin: 0;
+      flex-grow: 1;
+    }
+    
+    .student-id {
+      background: var(--light);
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--secondary);
+    }
+    
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    
+    .metric-card {
+      background: white;
+      padding: 15px;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+      border: 1px solid #eee;
+    }
+    
+    .metric-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 5px 0;
+    }
+    
+    .metric-label {
+      font-size: 12px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .ai-feedback {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: var(--border-radius);
+      margin-top: 20px;
+      position: relative;
+      border-left: 4px solid var(--success);
+      font-style: italic;
+    }
+    
+    .ai-feedback:before {
+      content: "AI Feedback";
+      position: absolute;
+      top: -10px;
+      left: 15px;
+      background: var(--success);
+      color: white;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      font-style: normal;
+    }
+    
+    .section-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      color: var(--secondary);
+    }
+    
+    .section-title h3 {
+      margin: 0;
+      flex-grow: 1;
+    }
+    
+    .section-icon {
+      margin-right: 10px;
+      font-size: 24px;
+      color: var(--primary);
+    }
+    
+    .progress-container {
+      margin: 20px 0;
+    }
+    
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .progress-bar {
+      height: 10px;
+      background: #ecf0f1;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    
+    .badge-beginner {
+      background: #f39c12;
+      color: white;
+    }
+    
+    .badge-intermediate {
+      background: #3498db;
+      color: white;
+    }
+    
+    .badge-advanced {
+      background: #2ecc71;
+      color: white;
+    }
+    
+    .key-highlight {
+      background: #fff3cd;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    
+    .weak-keys {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f8d7da;
+      border-radius: var(--border-radius);
+    }
+    
+    .mode-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .mode-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    
+    .mode-tab.active {
+      border-bottom-color: var(--primary);
+      font-weight: 500;
+      color: var(--primary);
+    }
+    
+    .mode-tab:hover {
+      background: #f8f9fa;
+    }
+    
+    .mode-content {
+      display: none;
+    }
+    
+    .mode-content.active {
+      display: block;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 30px;
+    }
+    
+    .loading-spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 600px) {
+      .input-group {
+        flex-direction: column;
+      }
+      
+      input[type="number"] {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+      
+      button {
+        width: 100%;
+      }
+      
+      .metric-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .student-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .student-id {
+        margin-top: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Student Typing Performance Report</h1>
+
+  <div class="input-group">
+    <input type="number" id="studentId" placeholder="Enter Student ID" />
+    <button onclick="fetchReport()">Generate Report</button>
+  </div>
+
+  <div id="error" class="error"></div>
+
+  <div id="reportContainer"></div>
+
+  <script>
+    async function fetchReport() {
+      const id = document.getElementById('studentId').value;
+      const errorDiv = document.getElementById('error');
+      const container = document.getElementById('reportContainer');
+      errorDiv.textContent = '';
+      container.innerHTML = '';
+
+      if (!id) {
+        errorDiv.textContent = 'Please enter a valid Student ID.';
+        return;
+      }
+
+      try {
+        // Show loading state
+        container.innerHTML = `
+          <div class="card loading">
+            <div class="loading-spinner"></div>
+            <p>Generating comprehensive report...</p>
+          </div>
+        `;
+        
+        const res = await fetch(`/report/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch report. Please check the Student ID and try again.');
+        const data = await res.json();
+
+        // Calculate overall score
+        const exerciseStats = parseStats(data.exercise.summary);
+        const poolStats = parseStats(data.pool.summary);
+        const overallScore = calculateOverallScore(exerciseStats, poolStats);
+        
+        // Determine skill level
+        const skillLevel = getSkillLevel(
+          (exerciseStats.avgWpm + poolStats.avgWpm) / 2,
+          (exerciseStats.avgAccuracy + poolStats.avgAccuracy) / 2
+        );
+        
+        // Render the full report
+        container.innerHTML = `
+          <div class="card">
+            <div class="student-header">
+              <h2>${data.student_name}</h2>
+              <span class="student-id">ID: ${id}</span>
+              <span class="badge badge-${skillLevel.toLowerCase()}">${skillLevel}</span>
+            </div>
+            
+            <div class="progress-container">
+              <div class="progress-label">
+                <span>Overall Performance Score</span>
+                <span>${overallScore}%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${overallScore}%"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mode-tabs">
+            <div class="mode-tab active" onclick="switchTab('exercise')">Exercise Mode</div>
+            <div class="mode-tab" onclick="switchTab('pool')">Pool Mode</div>
+          </div>
+          
+          <div id="exercise-content" class="mode-content active">
+            ${renderModeReport('exercise', data.exercise)}
+          </div>
+          
+          <div id="pool-content" class="mode-content">
+            ${renderModeReport('pool', data.pool)}
+          </div>
+          
+          <div class="card">
+            <div class="section-title">
+              <span class="section-icon"><i class="fas fa-lightbulb"></i></span>
+              <h3>Personalized Recommendations</h3>
+            </div>
+            <p>Based on the analysis, here are some personalized recommendations for improvement:</p>
+            <ul>
+              ${renderRecommendations(exerciseStats, poolStats)}
+            </ul>
+          </div>
+        `;
+      } catch (err) {
+        errorDiv.textContent = err.message;
+      }
+    }
+    
+    function parseStats(summaryText) {
+      // Extract metrics from the summary text
+      const stats = {
+        avgWpm: extractNumber(summaryText, /Average WPM: ([\d.]+)/),
+        avgAccuracy: extractNumber(summaryText, /Average Accuracy: ([\d.]+)%/),
+        highestWpm: extractNumber(summaryText, /Highest WPM: ([\d.]+)/),
+        lowestWpm: extractNumber(summaryText, /Lowest WPM: ([\d.]+)/),
+        totalDrills: extractNumber(summaryText, /Total Drills Played: (\d+)/),
+        weakestKeys: extractWeakestKeys(summaryText),
+        totalKeys: extractNumber(summaryText, /Total Keys Typed: (\d+)/),
+        correctKeys: extractNumber(summaryText, /Correct: (\d+)/),
+        wrongKeys: extractNumber(summaryText, /Wrong: (\d+)/),
+        missedKeys: extractNumber(summaryText, /Missed: (\d+)/)
+      };
+      
+      return stats;
+    }
+    
+    function extractNumber(text, regex) {
+      const match = text.match(regex);
+      return match ? parseFloat(match[1]) : 0;
+    }
+    
+    function extractWeakestKeys(text) {
+      const match = text.match(/Most Missed\/Mistyped Keys: '([^']*)'/);
+      return match ? match[1].trim() : '';
+    }
+    
+    function calculateOverallScore(exerciseStats, poolStats) {
+      // Weighted average calculation
+      const wpmScore = (exerciseStats.avgWpm * 0.4 + poolStats.avgWpm * 0.6) / 1.5;
+      const accuracyScore = (exerciseStats.avgAccuracy * 0.4 + poolStats.avgAccuracy * 0.6) * 0.8;
+      const consistencyScore = Math.min(100, (exerciseStats.totalDrills + poolStats.totalDrills) * 2);
+      
+      return Math.round(wpmScore + accuracyScore + consistencyScore / 3);
+    }
+    
+    function getSkillLevel(wpm, accuracy) {
+      if (wpm >= 40 && accuracy >= 95) return "Advanced";
+      if (wpm >= 30 && accuracy >= 85) return "Intermediate";
+      return "Beginner";
+    }
+    
+    function renderModeReport(mode, data) {
+      const stats = parseStats(data.summary);
+      const latest = parseLatestReport(data.latest);
+      
+      return `
+        <div class="card">
+          <div class="section-title">
+            <span class="section-icon">
+              ${mode === 'exercise' ? '<i class="fas fa-keyboard"></i>' : '<i class="fas fa-swimming-pool"></i>'}
+            </span>
+            <h3>${mode === 'exercise' ? 'Exercise' : 'Pool'} Performance Overview</h3>
+          </div>
+          
+          <div class="metric-grid">
+            ${renderMetricCard('Avg WPM', stats.avgWpm.toFixed(1))}
+            ${renderMetricCard('Avg Accuracy', stats.avgAccuracy.toFixed(1) + '%')}
+            ${renderMetricCard('Highest WPM', stats.highestWpm.toFixed(1))}
+            ${renderMetricCard('Total Drills', stats.totalDrills)}
+          </div>
+          
+          <h4>Key Statistics</h4>
+          <pre>${data.summary}</pre>
+          
+          <div class="ai-feedback">
+            <p>${data.ai_feedback}</p>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="section-title">
+            <span class="section-icon"><i class="fas fa-chart-line"></i></span>
+            <h3>Latest Drill Details</h3>
+          </div>
+          
+          ${latest.drillName ? `<p><strong>Drill:</strong> ${latest.drillName}</p>` : ''}
+          
+          <div class="metric-grid">
+            ${renderMetricCard('WPM', latest.wpm.toFixed(1))}
+            ${renderMetricCard('Accuracy', latest.accuracy.toFixed(1) + '%')}
+            ${renderMetricCard('Total Keys', latest.totalKeys)}
+            ${renderMetricCard('Skill Level', latest.skillLevel, true)}
+          </div>
+          
+          <div class="progress-container">
+            <div class="progress-label">
+              <span>Key Accuracy</span>
+              <span>${latest.accuracy.toFixed(1)}%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${latest.accuracy}%"></div>
+            </div>
+          </div>
+          
+          ${latest.weakestKeys ? `
+            <div class="weak-keys">
+              <p><strong>Weakest Keys in this drill:</strong></p>
+              <p>${latest.weakestKeys.split(' ').map(k => `<span class="key-highlight">${k}</span>`).join(' ')}</p>
+            </div>
+          ` : ''}
+          
+          <pre>${data.latest}</pre>
+        </div>
+      `;
+    }
+    
+    function parseLatestReport(latestText) {
+      const drillMatch = latestText.match(/Drill: (.+)/);
+      const wpmMatch = latestText.match(/WPM: ([\d.]+)/);
+      const accuracyMatch = latestText.match(/Accuracy: ([\d.]+)%/);
+      const totalKeysMatch = latestText.match(/Total Keys Typed: (\d+)/);
+      const weakestKeysMatch = latestText.match(/Weakest Keys \(this drill\): '([^']*)'/);
+      const skillLevelMatch = latestText.match(/Skill Level: (\w+)/);
+      
+      return {
+        drillName: drillMatch ? drillMatch[1] : '',
+        wpm: wpmMatch ? parseFloat(wpmMatch[1]) : 0,
+        accuracy: accuracyMatch ? parseFloat(accuracyMatch[1]) : 0,
+        totalKeys: totalKeysMatch ? parseInt(totalKeysMatch[1]) : 0,
+        weakestKeys: weakestKeysMatch ? weakestKeysMatch[1] : '',
+        skillLevel: skillLevelMatch ? skillLevelMatch[1] : 'Beginner'
+      };
+    }
+    
+    function renderMetricCard(label, value, isLevel = false) {
+      const badgeClass = isLevel ? `badge-${value.toLowerCase()}` : '';
+      return `
+        <div class="metric-card">
+          <div class="metric-value">${value} ${isLevel ? `<span class="badge ${badgeClass}">${value}</span>` : ''}</div>
+          <div class="metric-label">${label}</div>
+        </div>
+      `;
+    }
+    
+    function renderRecommendations(exerciseStats, poolStats) {
+      const recommendations = [];
+      
+      // Accuracy recommendations
+      if (exerciseStats.avgAccuracy < 85 || poolStats.avgAccuracy < 85) {
+        recommendations.push(`<li><i class="fas fa-bullseye"></i> Focus on <strong>accuracy drills</strong> to improve your precision (current accuracy: ${((exerciseStats.avgAccuracy + poolStats.avgAccuracy)/2).toFixed(1)}%)</li>`);
+      }
+      
+      // Speed recommendations
+      if (exerciseStats.avgWpm < 30 || poolStats.avgWpm < 30) {
+        recommendations.push(`<li><i class="fas fa-tachometer-alt"></i> Practice <strong>speed exercises</strong> to increase your typing speed (current average: ${((exerciseStats.avgWpm + poolStats.avgWpm)/2).toFixed(1)} WPM)</li>`);
+      }
+      
+      // Weak keys recommendations
+      if (exerciseStats.weakestKeys || poolStats.weakestKeys) {
+        const weakKeys = [...new Set([...exerciseStats.weakestKeys.split(' '), ...poolStats.weakestKeys.split(' ')])].filter(k => k).join(', ');
+        if (weakKeys) {
+          recommendations.push(`<li><i class="fas fa-key"></i> Target practice for <strong>weak keys</strong>: ${weakKeys.split(' ').map(k => `<span class="key-highlight">${k}</span>`).join(' ')}</li>`);
+        }
+      }
+      
+      // Consistency recommendations
+      if (exerciseStats.totalDrills < 5 || poolStats.totalDrills < 5) {
+        recommendations.push(`<li><i class="fas fa-calendar-check"></i> Increase practice <strong>frequency</strong> for more consistent results (total drills: ${exerciseStats.totalDrills + poolStats.totalDrills})</li>`);
+      }
+      
+      // Default recommendation if none others apply
+      if (recommendations.length === 0) {
+        recommendations.push(`<li><i class="fas fa-star"></i> Keep up the great work! Consider challenging yourself with more advanced drills</li>`);
+      }
+      
+      return recommendations.join('');
+    }
+    
+    function switchTab(mode) {
+      // Update tabs
+      document.querySelectorAll('.mode-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`.mode-tab[onclick="switchTab('${mode}')"]`).classList.add('active');
+      
+      // Update content
+      document.querySelectorAll('.mode-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${mode}-content`).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

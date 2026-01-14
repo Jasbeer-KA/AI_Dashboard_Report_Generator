@@ -1,0 +1,1 @@
+ERROR 1050 (42S01) at line 31: Table 'academic_years' already exists
