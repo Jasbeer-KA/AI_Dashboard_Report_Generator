@@ -36,8 +36,8 @@ A FastAPI-based backend service that generates detailed typing performance repor
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
-   cd project-root
+   git clone <https://github.com/Jasbeer-KA/AI_Dashboard_Report_Generator.git>
+   cd AI_Dashboard_Report_Generator
    ```
 
 2. **Create virtual environment (optional but recommended)**
@@ -172,11 +172,6 @@ This allows frontend-backend communication during development.
 
 ## 👤 Author
 
-**Abdul Rahman Jasbeer**
+**Abdul Rahiman Jasbeer**
 
 ---
-
-## 📄 License
-
-Specify your license here (MIT, Apache 2.0, etc.)
-
