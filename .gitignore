@@ -68,3 +68,8 @@ dist/
 # ----------------------------
 tmp/
 temp/
+app.py
+db_test.py
+static/
+report_generator.py
+
